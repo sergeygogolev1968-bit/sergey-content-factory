@@ -1,0 +1,123 @@
+name: Publish Instagram Carousel
+
+on:
+  push:
+    paths:
+      - publish.json
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate publish manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f publish.json
+          jq empty publish.json
+          count=$(jq '.image_urls | length' publish.json)
+          if [ "$count" -lt 2 ] || [ "$count" -gt 10 ]; then
+            echo "image_urls must contain 2-10 URLs; got $count"
+            exit 1
+          fi
+          test -n "$(jq -r '.caption // ""' publish.json)"
+          test -n "$(jq -r '.comment // ""' publish.json)"
+
+      - name: Check public image URLs
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -r '.image_urls[]' publish.json | while read -r url; do
+            echo "Checking $url"
+            curl --fail --silent --show-error --location --head --max-time 30 "$url" >/dev/null
+          done
+
+      - name: Publish carousel through Windsor.ai
+        id: publish
+        env:
+          WINDSOR_API_KEY: ${{ secrets.WINDSOR_API_KEY }}
+          WINDSOR_ACCOUNT: "17841437917468502"
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$WINDSOR_API_KEY"
+
+          jq -n \
+            --arg account "$WINDSOR_ACCOUNT" \
+            --arg action "create_carousel_post" \
+            --slurpfile manifest publish.json \
+            '{account:$account, action:$action, params:{image_urls:$manifest[0].image_urls, caption:$manifest[0].caption}}' \
+            > request.json
+
+          http_code=$(curl --silent --show-error --location \
+            --output carousel_response.json \
+            --write-out '%{http_code}' \
+            --request POST \
+            --url "https://connectors.windsor.ai/instagram/actions?api_key=${WINDSOR_API_KEY}" \
+            --header 'Content-Type: application/json' \
+            --data @request.json)
+
+          cat carousel_response.json
+          if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+            echo "Windsor publish failed with HTTP $http_code"
+            exit 1
+          fi
+
+          media_id=$(jq -r '
+            .media_id //
+            .result.media_id //
+            .result.id //
+            .result.media.id //
+            empty
+          ' carousel_response.json)
+
+          if [ -z "$media_id" ] || [ "$media_id" = "null" ]; then
+            echo "Carousel was accepted, but no media_id was returned by Windsor."
+            echo "The comment step cannot run safely without the media_id."
+            exit 1
+          fi
+
+          echo "media_id=$media_id" >> "$GITHUB_OUTPUT"
+
+      - name: Add funnel comment
+        env:
+          WINDSOR_API_KEY: ${{ secrets.WINDSOR_API_KEY }}
+          WINDSOR_ACCOUNT: "17841437917468502"
+          MEDIA_ID: ${{ steps.publish.outputs.media_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          jq -n \
+            --arg account "$WINDSOR_ACCOUNT" \
+            --arg action "create_comment" \
+            --arg media_id "$MEDIA_ID" \
+            --arg message "$(jq -r '.comment' publish.json)" \
+            '{account:$account, action:$action, params:{media_id:$media_id, message:$message}}' \
+            > comment_request.json
+
+          http_code=$(curl --silent --show-error --location \
+            --output comment_response.json \
+            --write-out '%{http_code}' \
+            --request POST \
+            --url "https://connectors.windsor.ai/instagram/actions?api_key=${WINDSOR_API_KEY}" \
+            --header 'Content-Type: application/json' \
+            --data @comment_request.json)
+
+          cat comment_response.json
+          if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+            echo "Windsor comment failed with HTTP $http_code"
+            exit 1
+          fi
+
+      - name: Publish summary
+        if: always()
+        run: |
+          echo "Instagram carousel workflow finished."
+          echo "Source: GitHub -> Netlify -> Windsor.ai -> Instagram"
