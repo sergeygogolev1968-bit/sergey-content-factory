@@ -1,0 +1,13 @@
+{
+  "image_urls": [
+    "https://sergey-korneev-carousel-20260914.netlify.app/slide_01.jpg",
+    "https://sergey-korneev-carousel-20260914.netlify.app/slide_02.jpg",
+    "https://sergey-korneev-carousel-20260914.netlify.app/slide_03.jpg",
+    "https://sergey-korneev-carousel-20260914.netlify.app/slide_04.jpg",
+    "https://sergey-korneev-carousel-20260914.netlify.app/slide_05.jpg",
+    "https://sergey-korneev-carousel-20260914.netlify.app/slide_06.jpg",
+    "https://sergey-korneev-carousel-20260914.netlify.app/slide_07.jpg"
+  ],
+  "caption": "Здесь будет подпись к публикации.",
+  "comment": "Здесь будет маркетинговый комментарий с CTA и ссылкой воронки."
+}
