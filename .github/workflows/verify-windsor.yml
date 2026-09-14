@@ -1,0 +1,36 @@
+name: Verify Windsor API
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify Windsor API key and write access
+        env:
+          WINDSOR_API_KEY: ${{ secrets.WINDSOR_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${WINDSOR_API_KEY:-}" ]; then
+            echo "::error::WINDSOR_API_KEY secret is not configured"
+            exit 1
+          fi
+
+          http_code=$(curl --silent --show-error --location \
+            --output actions_response.json \
+            --write-out '%{http_code}' \
+            --request GET \
+            --url "https://connectors.windsor.ai/instagram/actions?api_key=${WINDSOR_API_KEY}")
+
+          cat actions_response.json
+          if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+            echo "Windsor API verification failed with HTTP $http_code"
+            exit 1
+          fi
+
+          echo "Windsor API key accepted and Instagram connector actions are reachable."
