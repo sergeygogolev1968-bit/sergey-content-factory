@@ -1,0 +1,32 @@
+name: Render approved carousel v3
+on:
+  push:
+    paths:
+      - carousel_05_v3/*.svg
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Render SVG to JPEG
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y librsvg2-bin python3-pil
+          python3 - <<'PY'
+          import glob, subprocess, os
+          from PIL import Image
+          for svg in glob.glob('carousel_05_v3/*.svg'):
+              png=svg[:-4]+'.png'
+              subprocess.run(['rsvg-convert','-f','png','-w','1080','-h','1350',svg,'-o',png],check=True)
+              im=Image.open(png).convert('RGB')
+              im.save(svg[:-4]+'.jpg',quality=90,optimize=True)
+          PY
+      - name: Commit JPEGs
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add carousel_05_v3/*.jpg
+          git commit -m 'Render approved carousel 05 v3 as JPEG' || true
+          git push
