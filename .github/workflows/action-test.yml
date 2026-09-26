@@ -1,0 +1,10 @@
+name: Test Action Trigger
+on:
+  push:
+    paths:
+      - 'action-test.txt'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "ACTION_OK"
