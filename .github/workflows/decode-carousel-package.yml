@@ -259,10 +259,15 @@ jobs:
             .result.id //
             .result.media.id //
             empty
-          ' /tmp/carousel_response.json)"
+          ' /tmp/carousel_response.json 2>/dev/null || true)"
 
           if [ -z "$media_id" ] || [ "$media_id" = "null" ]; then
-            echo "No media_id returned; refusing to mark published."
+            result_text="$(jq -r '.result // empty' /tmp/carousel_response.json 2>/dev/null || true)"
+            media_id="$(printf '%s' "$result_text" | sed -nE 's/.*Media id: ([0-9]+).*/\\1/p')"
+          fi
+
+          if [ -z "$media_id" ] || [ "$media_id" = "null" ]; then
+            echo "Publish response did not contain a parseable media_id; refusing to mark published."
             exit 1
           fi
 
