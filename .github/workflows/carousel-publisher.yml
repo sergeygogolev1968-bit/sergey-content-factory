@@ -1,0 +1,276 @@
+name: Carousel Publisher 1.0
+
+on:
+  push:
+    paths:
+      - 'incoming/carousel_*.zip'
+      - 'incoming/carousel_*.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: carousel-publisher-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      WINDSOR_ACCOUNT: "17841437917468502"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Install image validation dependency
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pillow
+
+      - name: Locate package and manifest
+        id: package
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          pkg="$(git diff-tree --no-commit-id --name-only -r "$GITHUB_SHA" | grep -E '^incoming/carousel_[0-9]+\.zip$' | head -n1 || true)"
+          if [ -z "$pkg" ]; then
+            pkg="$(ls -1t incoming/carousel_*.zip 2>/dev/null | head -n1 || true)"
+          fi
+          if [ -z "$pkg" ]; then
+            echo "No carousel package found."
+            exit 1
+          fi
+
+          id="$(basename "$pkg" .zip)"
+          manifest="incoming/${id}.json"
+
+          if [ ! -f "$manifest" ]; then
+            echo "Missing manifest: $manifest"
+            exit 1
+          fi
+
+          echo "pkg=$pkg" >> "$GITHUB_OUTPUT"
+          echo "id=$id" >> "$GITHUB_OUTPUT"
+          echo "manifest=$manifest" >> "$GITHUB_OUTPUT"
+
+      - name: Idempotency guard
+        id: guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          id="${{ steps.package.outputs.id }}"
+          status_file="published/${id}/status.json"
+
+          if [ -f "$status_file" ] && [ "$(jq -r '.status // empty' "$status_file")" = "published" ]; then
+            echo "Carousel ${id} is already published. Stopping safely."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Validate manifest
+        if: steps.guard.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          manifest="${{ steps.package.outputs.manifest }}"
+          jq empty "$manifest"
+          test "$(jq -r '.publish // false' "$manifest")" = "true"
+          test -n "$(jq -r '.caption // ""' "$manifest")"
+
+      - name: Extract and QA carousel
+        if: steps.guard.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          pkg="${{ steps.package.outputs.pkg }}"
+          id="${{ steps.package.outputs.id }}"
+          stage="_carousel_stage/${id}"
+          out="published/${id}"
+
+          rm -rf "$stage"
+          mkdir -p "$stage" "$out"
+          unzip -q "$pkg" -d "$stage"
+
+          python - <<'PY'
+          import os, re, sys, json, shutil
+          from pathlib import Path
+          from PIL import Image
+
+          stage = Path(os.environ["STAGE"])
+          out = Path(os.environ["OUT"])
+
+          files = sorted(stage.glob("slide_*.jpg"))
+          if not (2 <= len(files) <= 10):
+              raise SystemExit(f"Expected 2-10 JPEG slides, got {len(files)}")
+
+          expected = [f"slide_{i:02d}.jpg" for i in range(1, len(files)+1)]
+          actual = [p.name for p in files]
+          if actual != expected:
+              raise SystemExit(f"Non-sequential names. Expected {expected}, got {actual}")
+
+          report = {"status": "pass", "slide_count": len(files), "slides": []}
+
+          for p in files:
+              if p.stat().st_size > 8 * 1024 * 1024:
+                  raise SystemExit(f"{p.name}: file exceeds 8 MB")
+
+              with Image.open(p) as im:
+                  if im.format != "JPEG":
+                      raise SystemExit(f"{p.name}: not JPEG")
+                  if im.size != (1080, 1350):
+                      raise SystemExit(f"{p.name}: expected 1080x1350, got {im.size}")
+                  im.verify()
+
+              shutil.copy2(p, out / p.name)
+              report["slides"].append({
+                  "name": p.name,
+                  "bytes": p.stat().st_size,
+                  "width": 1080,
+                  "height": 1350,
+                  "format": "JPEG"
+              })
+
+          (out / "qa-report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          print(json.dumps(report, ensure_ascii=False))
+          PY
+        env:
+          STAGE: _carousel_stage/${{ steps.package.outputs.id }}
+          OUT: published/${{ steps.package.outputs.id }}
+
+      - name: Commit validated assets
+        if: steps.guard.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          id="${{ steps.package.outputs.id }}"
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          git add "published/${id}/slide_"*.jpg "published/${id}/qa-report.json"
+          if git diff --cached --quiet; then
+            echo "Validated assets already present."
+          else
+            git commit -m "Prepare ${id} assets for Instagram"
+            git push
+          fi
+
+      - name: Build and verify public URLs
+        if: steps.guard.outputs.skip != 'true'
+        id: urls
+        shell: bash
+        run: |
+          set -euo pipefail
+          id="${{ steps.package.outputs.id }}"
+          count="$(find "published/${id}" -maxdepth 1 -type f -name 'slide_*.jpg' | wc -l | tr -d ' ')"
+
+          jq -n '[]' > image_urls.json
+          for i in $(seq 1 "$count"); do
+            name="$(printf 'slide_%02d.jpg' "$i")"
+            url="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/${GITHUB_REF_NAME}/published/${id}/${name}"
+
+            ok=false
+            for attempt in 1 2 3 4 5 6; do
+              if curl --fail --silent --show-error --location --head --max-time 30 "$url" >/dev/null; then
+                ok=true
+                break
+              fi
+              sleep 5
+            done
+
+            if [ "$ok" != "true" ]; then
+              echo "Public URL unavailable: $url"
+              exit 1
+            fi
+
+            jq --arg url "$url" '. + [$url]' image_urls.json > image_urls.tmp
+            mv image_urls.tmp image_urls.json
+          done
+
+          compact="$(jq -c '.' image_urls.json)"
+          echo "image_urls=$compact" >> "$GITHUB_OUTPUT"
+          echo "slide_count=$count" >> "$GITHUB_OUTPUT"
+
+      - name: Publish carousel through Windsor.ai
+        if: steps.guard.outputs.skip != 'true'
+        id: publish
+        env:
+          WINDSOR_API_KEY: ${{ secrets.WINDSOR_API_KEY }}
+          IMAGE_URLS: ${{ steps.urls.outputs.image_urls }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$WINDSOR_API_KEY"
+
+          manifest="${{ steps.package.outputs.manifest }}"
+          caption="$(jq -r '.caption' "$manifest")"
+
+          jq -n \
+            --arg account "$WINDSOR_ACCOUNT" \
+            --arg action "create_carousel_post" \
+            --argjson image_urls "$IMAGE_URLS" \
+            --arg caption "$caption" \
+            '{account:$account, action:$action, params:{image_urls:$image_urls, caption:$caption}}' \
+            > request.json
+
+          http_code="$(curl --silent --show-error --location \
+            --output carousel_response.json \
+            --write-out '%{http_code}' \
+            --request POST \
+            --url "https://connectors.windsor.ai/instagram/actions?api_key=${WINDSOR_API_KEY}" \
+            --header 'Content-Type: application/json' \
+            --data @request.json)"
+
+          cat carousel_response.json
+
+          if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+            echo "Windsor publish failed with HTTP $http_code"
+            exit 1
+          fi
+
+          media_id="$(jq -r '
+            .media_id //
+            .result.media_id //
+            .result.id //
+            .result.media.id //
+            empty
+          ' carousel_response.json)"
+
+          if [ -z "$media_id" ] || [ "$media_id" = "null" ]; then
+            echo "Carousel accepted but no media_id returned."
+            exit 1
+          fi
+
+          echo "media_id=$media_id" >> "$GITHUB_OUTPUT"
+
+      - name: Write publication status
+        if: steps.guard.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          id="${{ steps.package.outputs.id }}"
+          media_id="${{ steps.publish.outputs.media_id }}"
+          count="${{ steps.urls.outputs.slide_count }}"
+          dir="published/${id}"
+
+          jq -n \
+            --arg status "published" \
+            --arg media_id "$media_id" \
+            --arg published_at "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+            --arg source_commit "$GITHUB_SHA" \
+            --argjson slide_count "$count" \
+            '{status:$status, media_id:$media_id, slide_count:$slide_count, published_at:$published_at, source_commit:$source_commit}' \
+            > "$dir/status.json"
+
+          git add "$dir/status.json"
+          git commit -m "Record ${id} Instagram publication"
+          git push
+
+          echo "Published ${id}"
+          echo "media_id=${media_id}"
+          echo "slide_count=${count}"
