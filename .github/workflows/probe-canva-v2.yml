@@ -1,0 +1,21 @@
+name: Probe Canva URL V2
+on:
+  push:
+    paths:
+      - 'canva-probe-v2.txt'
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe URLs
+        shell: bash
+        run: |
+          set -e
+          original='https://media.canva.com/v2/image-resize/format:JPG/height:200/quality:75/uri:ifs%3A%2F%2FM%2F5eb0bda9-570e-4a5e-8f39-bb4546c3209b/watermark:F/width:160?csig=AAAAAAAAAAAAAAAAAAAAACw-bN8k6rv_pWGIr_qyDN1yMfm7Wfwb3-7aDq86JRAd&exp=1790445414&osig=AAAAAAAAAAAAAAAAAAAAAKBOjMwgpK0sbGkSaL10flgNj_55KbKnBMup5BlGfLNv&signer=media-rpc&x-canva-quality=thumbnail'
+          modified='https://media.canva.com/v2/image-resize/format:JPG/height:1350/quality:90/uri:ifs%3A%2F%2FM%2F5eb0bda9-570e-4a5e-8f39-bb4546c3209b/watermark:F/width:1080?csig=AAAAAAAAAAAAAAAAAAAAACw-bN8k6rv_pWGIr_qyDN1yMfm7Wfwb3-7aDq86JRAd&exp=1790445414&osig=AAAAAAAAAAAAAAAAAAAAAKBOjMwgpK0sbGkSaL10flgNj_55KbKnBMup5BlGfLNv&signer=media-rpc'
+          for kind in original modified; do
+            if [ "$kind" = original ]; then u="$original"; else u="$modified"; fi
+            code=$(curl -L -sS -o "$kind.bin" -w '%{http_code}' "$u" || true)
+            echo "$kind HTTP=$code bytes=$(wc -c < "$kind.bin")"
+            file "$kind.bin" || true
+          done
