@@ -1,0 +1,69 @@
+{
+  "status": "pass",
+  "slide_count": 9,
+  "slides": [
+    {
+      "name": "slide_01.jpg",
+      "bytes": 128100,
+      "width": 1080,
+      "height": 1350,
+      "format": "JPEG"
+    },
+    {
+      "name": "slide_02.jpg",
+      "bytes": 171589,
+      "width": 1080,
+      "height": 1350,
+      "format": "JPEG"
+    },
+    {
+      "name": "slide_03.jpg",
+      "bytes": 222374,
+      "width": 1080,
+      "height": 1350,
+      "format": "JPEG"
+    },
+    {
+      "name": "slide_04.jpg",
+      "bytes": 194093,
+      "width": 1080,
+      "height": 1350,
+      "format": "JPEG"
+    },
+    {
+      "name": "slide_05.jpg",
+      "bytes": 202288,
+      "width": 1080,
+      "height": 1350,
+      "format": "JPEG"
+    },
+    {
+      "name": "slide_06.jpg",
+      "bytes": 189040,
+      "width": 1080,
+      "height": 1350,
+      "format": "JPEG"
+    },
+    {
+      "name": "slide_07.jpg",
+      "bytes": 193232,
+      "width": 1080,
+      "height": 1350,
+      "format": "JPEG"
+    },
+    {
+      "name": "slide_08.jpg",
+      "bytes": 155153,
+      "width": 1080,
+      "height": 1350,
+      "format": "JPEG"
+    },
+    {
+      "name": "slide_09.jpg",
+      "bytes": 161158,
+      "width": 1080,
+      "height": 1350,
+      "format": "JPEG"
+    }
+  ]
+}
