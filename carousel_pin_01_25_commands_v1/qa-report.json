@@ -1,0 +1,202 @@
+{
+  "version": "carousel_pin_01_25_commands_v1",
+  "status": "user approved",
+  "scope": "Закреп №1; только локальная подготовка, без публикации",
+  "copy_source": "provided-copy.md — текст пользователя",
+  "visual_reference": "assets/carousels_20260928/carousel_09; адаптация фирменного стиля, не точная копия недоступного Canva-макета",
+  "technical_qa": "pass",
+  "content_qa": "pass",
+  "visual_qa": "pass",
+  "command_count": 25,
+  "slide_count": 9,
+  "slides": [
+    {
+      "file": "slide_01.jpg",
+      "title": "25 команд ChatGPT, которые реально экономят часы",
+      "command_numbers": []
+    },
+    {
+      "file": "slide_02.jpg",
+      "title": "Больше, чем поиск",
+      "command_numbers": []
+    },
+    {
+      "file": "slide_03.jpg",
+      "title": "РАЗОБРАТЬСЯ И ПРИНЯТЬ РЕШЕНИЕ",
+      "command_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "file": "slide_04.jpg",
+      "title": "НАВЕСТИ ПОРЯДОК В ТЕКСТЕ",
+      "command_numbers": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "file": "slide_05.jpg",
+      "title": "ПРОВЕРИТЬ СВОЮ ИДЕЮ",
+      "command_numbers": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "file": "slide_06.jpg",
+      "title": "СОКРАТИТЬ РУТИНУ",
+      "command_numbers": [
+        16,
+        17,
+        18,
+        19,
+        20
+      ]
+    },
+    {
+      "file": "slide_07.jpg",
+      "title": "УСИЛИТЬ РЕЗУЛЬТАТ",
+      "command_numbers": [
+        21,
+        22,
+        23,
+        24,
+        25
+      ]
+    },
+    {
+      "file": "slide_08.jpg",
+      "title": "Главный секрет: контекст",
+      "command_numbers": []
+    },
+    {
+      "file": "slide_09.jpg",
+      "title": "Сохрани эту карусель",
+      "command_numbers": []
+    }
+  ],
+  "files": [
+    {
+      "file": "slide_01.jpg",
+      "format": "JPEG",
+      "width": 1080,
+      "height": 1350,
+      "bytes": 128100,
+      "sha256": "2457bdd7be898ed695e03e615d1134f03b53df25a6433305adcee80811281aee"
+    },
+    {
+      "file": "slide_02.jpg",
+      "format": "JPEG",
+      "width": 1080,
+      "height": 1350,
+      "bytes": 171589,
+      "sha256": "1b1f2f24f65dc85843ba696bd97cbbe1861b2d05af644381bd6ef81f59696402"
+    },
+    {
+      "file": "slide_03.jpg",
+      "format": "JPEG",
+      "width": 1080,
+      "height": 1350,
+      "bytes": 222374,
+      "sha256": "c72f0f547bac8ba8f75a3c3470aa7db249f632b1ae1124918d4791e99821bfb6"
+    },
+    {
+      "file": "slide_04.jpg",
+      "format": "JPEG",
+      "width": 1080,
+      "height": 1350,
+      "bytes": 194093,
+      "sha256": "c38b74cc50e0d05e7e9d4673e65ab096bcc8c808d536d0104ee53dbe8800d674"
+    },
+    {
+      "file": "slide_05.jpg",
+      "format": "JPEG",
+      "width": 1080,
+      "height": 1350,
+      "bytes": 202288,
+      "sha256": "116f865a976fba82789b0b26036d546f0dac03b81c756344ffc09cef6f471597"
+    },
+    {
+      "file": "slide_06.jpg",
+      "format": "JPEG",
+      "width": 1080,
+      "height": 1350,
+      "bytes": 189040,
+      "sha256": "bf9200466f08c7752fffea4879ca1014c5bc16fa497f5f95d237f50ecceaa17e"
+    },
+    {
+      "file": "slide_07.jpg",
+      "format": "JPEG",
+      "width": 1080,
+      "height": 1350,
+      "bytes": 193232,
+      "sha256": "234a4bd7550094509d7dc07106b874f7c055d973e8894c117b7d848d72a141c3"
+    },
+    {
+      "file": "slide_08.jpg",
+      "format": "JPEG",
+      "width": 1080,
+      "height": 1350,
+      "bytes": 155153,
+      "sha256": "a70cce446e54b34192850fdb323638978f1cd8a2b40dd0ac4633f7bf1f9aa609"
+    },
+    {
+      "file": "slide_09.jpg",
+      "format": "JPEG",
+      "width": 1080,
+      "height": 1350,
+      "bytes": 161158,
+      "sha256": "c00980f002d725238e508c2524d99bd13f723e9ae375480892ea3e4543f8f7ae"
+    }
+  ],
+  "publication_authorized": true,
+  "design_user_approved": true,
+  "checks": [
+    "JPEG decode and verify",
+    "1080x1350 RGB",
+    "sequential names",
+    "no extra final files",
+    "under 8 MiB each",
+    "25 commands in source order",
+    "text within canvas safety bounds"
+  ],
+  "content_checks": [
+    "25 уникальных команд сохранены дословно и по порядку; переносы строк изменены для вёрстки",
+    "9 слайдов: хук, вводный, 5 групп по 5 команд, контекст, CTA",
+    "Орфография, смысловая последовательность и CTA проверены",
+    "Номера 01–25 относятся к командам; нумерации слайдов на изображениях нет"
+  ],
+  "visual_checks": {
+    "reviewed_files": [
+      "slide_01.jpg",
+      "slide_02.jpg",
+      "slide_03.jpg",
+      "slide_04.jpg",
+      "slide_05.jpg",
+      "slide_06.jpg",
+      "slide_07.jpg",
+      "slide_08.jpg",
+      "slide_09.jpg"
+    ],
+    "contact_sheet": "contact-sheet.jpg",
+    "result": "Кириллица, переносы, поля, контраст и отсутствие обрезки проверены на каждом JPEG и общей последовательности"
+  },
+  "limitations": [
+    "Новый дизайн ещё не утверждён пользователем",
+    "Недоступный исходный Canva-макет не воспроизводился; выполнена адаптация фирменной подачи карусели №9",
+    "Это проверка содержания и файлов, а не экспериментальная проверка экономии времени от 25 команд"
+  ],
+  "approval_note": "Пользователь: «Утверждаю. Публикуй на моей странице Инстаграм.»; 2026-09-30",
+  "publication_package": "incoming/carousel_101.zip"
+}
