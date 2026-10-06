@@ -2,6 +2,43 @@
 
 Этот каталог содержит утверждённые дополнения к визуальной системе Sergey Korneev Content Factory. Новые материалы должны использоваться вместе с действующими правилами бренда и не заменяют оригинальные фотографии Сергея.
 
+## SERGEY KORNEEV LOGO SYSTEM v1.0
+
+**Статус:** `APPROVED / WORKING MINIMUM`
+
+Утверждённый комплект находится в [`logo-system/final-approved-v1/`](logo-system/final-approved-v1/). Использовать только следующие элементы.
+
+### Hero Logo
+
+Главный официальный горизонтальный логотип без изменений. Использовать для брендовых заставок, intro/outro, финальных CTA, сайта, презентаций и документов. Не использовать как постоянный маленький watermark.
+
+Файл: [`hero-logo-approved-dark-1983x793.png`](logo-system/final-approved-v1/hero/hero-logo-approved-dark-1983x793.png).
+
+### Content Mark / Flat — Solid Seal
+
+Основной компактный знак для постоянного брендирования Reels, Stories и каруселей. Использовать утверждённые PNG 64–1024 px без деформации, новых эффектов или изменения цветов.
+
+Файлы: [`content-mark/`](logo-system/final-approved-v1/content-mark/).
+
+### Brand Badge v1
+
+Компактная горизонтальная плашка на основе Solid Seal. Использовать в Reels, Stories и каруселях, когда горизонтальная форма композиционно уместнее круглого знака, а также в Watermark Cover Mode.
+
+- Reel 1080×1920: Solid Seal 92×92 px, справа сверху, поле не менее 64 px.
+- Story 1080×1920: Solid Seal 92×92 px, справа сверху ниже системной зоны, поле не менее 64 px.
+- Carousel 1080×1350: Solid Seal 82×82 px, справа сверху, поле не менее 48 px.
+- Watermark Cover: Brand Badge масштабировать только пропорционально; полностью закрывать разрешённую к замене маркировку; по возможности оставлять запас 8–12%; не перекрывать лицо, основной текст, CTA и ключевой объект.
+
+Файл: [`brand-badge-v1-approved-760x164.png`](logo-system/final-approved-v1/brand-badge/brand-badge-v1-approved-760x164.png). Полные координаты: [`placement-rules-approved.json`](logo-system/final-approved-v1/placement-rules/placement-rules-approved.json).
+
+### Brand Mark
+
+Исходная утверждённая 3D-эмблема без редизайна. Использовать как самостоятельный брендовый акцент в гайдах, PDF и документах. Не заменять ею Solid Seal в постоянном брендировании контента и не использовать как крупный постоянный watermark.
+
+Файл: [`brand-mark-approved-3d-original-650x650.png`](logo-system/final-approved-v1/brand-mark/brand-mark-approved-3d-original-650x650.png).
+
+Запрещено менять геометрию, пропорции, цвета, взаимное расположение «СК», растягивать элементы или добавлять неутверждённые тени, обводки и glow.
+
 ## SERGEY KORNEEV — ANIMATED CHARACTER / REELS HERO
 
 **Статус:** `APPROVED / CANONICAL CHARACTER REFERENCE`

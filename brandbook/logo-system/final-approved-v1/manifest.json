@@ -1,0 +1,55 @@
+{
+  "bundle": "Sergey Korneev Logo System — approved set for current content tasks",
+  "version": "v1",
+  "created_on": "2026-10-06",
+  "status": "APPROVED_WORKING_MINIMUM",
+  "overall_logo_system_status": "APPROVED_WORKING_MINIMUM",
+  "brand_mark_status": "APPROVED_ORIGINAL_3D_FOR_GUIDES_PDF_DOCUMENTS",
+  "files": [
+    {
+      "path": "hero/hero-logo-approved-dark-1983x793.png",
+      "sha256": "0369B47E3B96716A1B441067D9D10623833C298A42279BC82F6682B3A1800790"
+    },
+    {
+      "path": "content-mark/solid-seal-approved-1024.png",
+      "sha256": "A6609CE11D18A392E0CD72DF25052A05D1D095B9F2EE95A30DFD466FD1E18E3D"
+    },
+    {
+      "path": "content-mark/solid-seal-approved-512.png",
+      "sha256": "4159441047B5EB61BD80DE71E7923DAFB7A14E2B7FC3C2D89A7BB60431B28A02"
+    },
+    {
+      "path": "content-mark/solid-seal-approved-256.png",
+      "sha256": "E20AAE1A15E02C670A334EBB8E0BABDF2A38087A3BE39F113FA7706037B9EF25"
+    },
+    {
+      "path": "content-mark/solid-seal-approved-96.png",
+      "sha256": "0CB5A64E8F10FE72DC526292FF173D97D2FC9F5461D001023DF1434980E21CBE"
+    },
+    {
+      "path": "content-mark/solid-seal-approved-64.png",
+      "sha256": "240E0B2F72569087DEA8BCF7EC4FB3EAE2075EE4C237C0C4574B37B686DC455A"
+    },
+    {
+      "path": "brand-badge/brand-badge-v1-approved-760x164.png",
+      "sha256": "121722E92F4E67E336E776D030A73BA5881AD91CBD717122803DA66E9DE3EC83"
+    },
+    {
+      "path": "brand-mark/brand-mark-approved-3d-original-650x650.png",
+      "sha256": "107A76CBE072CB58CC9E659AC5D58246E7E1E8B447953A7C7D40DD481A1C0306"
+    },
+    {
+      "path": "placement-rules/placement-rules-approved.json",
+      "sha256": "5F6683E2AC9717C7F7738D6AB753FD7887A4CFF127F8504564874ABF71EE95F5"
+    }
+  ],
+  "excluded": [
+    "unapproved transparent Hero derivatives",
+    "old Content Mark variants",
+    "old Brand Badge variants",
+    "wireframe templates and superseded visual tests"
+  ],
+  "brandbook_updated": true,
+  "commit_performed": false,
+  "push_performed": false
+}

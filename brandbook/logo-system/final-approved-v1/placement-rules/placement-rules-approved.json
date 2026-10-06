@@ -1,0 +1,52 @@
+{
+  "status": "APPROVED_FOR_CURRENT_CONTENT_TASKS",
+  "approved_on": "2026-10-06",
+  "rules": {
+    "reel": {
+      "canvas": [1080, 1920],
+      "asset": "Solid Seal",
+      "position": "top-right",
+      "x": 924,
+      "y": 230,
+      "width": 92,
+      "height": 92,
+      "minimum_edge_margin": 64,
+      "avoid": ["platform UI", "hook", "face", "main text", "CTA", "key object"]
+    },
+    "story": {
+      "canvas": [1080, 1920],
+      "asset": "Solid Seal",
+      "position": "top-right below system UI",
+      "x": 924,
+      "y": 250,
+      "width": 92,
+      "height": 92,
+      "minimum_edge_margin": 64,
+      "avoid": ["username and progress UI", "stickers", "face", "main text", "CTA", "key object"]
+    },
+    "carousel": {
+      "canvas": [1080, 1350],
+      "asset": "Solid Seal",
+      "position": "top-right for the approved tested layout",
+      "x": 950,
+      "y": 48,
+      "width": 82,
+      "height": 82,
+      "minimum_edge_margin": 48,
+      "avoid": ["hook", "headline", "body text", "navigation", "CTA", "key object"]
+    },
+    "watermark_cover": {
+      "asset": "Brand Badge v1",
+      "selection_rule": "Use the smallest proportional badge that fully covers an authorized source watermark.",
+      "scale_mode": "proportional only",
+      "safety_margin": "8–12% around the source watermark bounding box when canvas boundaries allow",
+      "verified_example": {
+        "canvas": [1080, 1920],
+        "source_watermark_bbox": [676, 1680, 306, 74],
+        "overlay_bbox": [626, 1673, 407, 88],
+        "coverage": "complete"
+      },
+      "video_check": ["beginning", "middle", "end", "full sequence if watermark moves, flickers or changes opacity"]
+    }
+  }
+}
